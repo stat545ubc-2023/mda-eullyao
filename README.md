@@ -2,7 +2,7 @@
 
 ### Description
 
-This repository contains the mini data analysis project for STAT 545. The analysis was done using the `vancouver_trees` from the [City of Vancouver's Open Data Portal](#0).
+This repository contains the mini data analysis project for STAT 545. The analysis was done using the `vancouver_trees` dataset from the `datateachr` package, with data acquired courtesy of the [City of Vancouver's Open Data Portal](#0).
 
 ### Quick links
 
