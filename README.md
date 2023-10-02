@@ -4,10 +4,11 @@
 
 This repository contains the mini data analysis project for STAT 545. The analysis was done using the `vancouver_trees` from the [City of Vancouver's Open Data Portal](#0).
 
-### Links
+### Quick links
 
--   
--   
+-   Files for Milestone 1
+    -   [Analysis for Milestone 1 - R Markdown](https://github.com/stat545ubc-2023/mda-eullyao/blob/main/MIlestone%201/mini-project-1.Rmd)
+    -   [Analysis for Milestone 1 - Markdown](https://github.com/stat545ubc-2023/mda-eullyao/blob/main/MIlestone%201/mini-project-1.md)
 
 ### Getting started
 
