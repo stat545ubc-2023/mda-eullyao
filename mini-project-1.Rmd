@@ -1,5 +1,6 @@
 ---
 title: "Mini Data-Analysis Deliverable 1"
+author: "Eully Ao"
 output: github_document
 ---
 
@@ -74,7 +75,7 @@ The `datateachr` package by Hayley Boyce and Jordan Bourak currently composed of
 
 **Things to keep in mind**
 
--   We hope that thhead(is project will serve as practice for carrying our your own *independent* data analysis. Remember to comment your code, be explicit about what you are doing, and write notes in this markdown document when you feel that context is required. As you advance in the project, prompts and hints to do this will be diminished - it'll be up to you!
+-   We hope that this project will serve as practice for carrying our your own *independent* data analysis. Remember to comment your code, be explicit about what you are doing, and write notes in this markdown document when you feel that context is required. As you advance in the project, prompts and hints to do this will be diminished - it'll be up to you!
 
 -   Before choosing a dataset, you should always keep in mind **your goal**, or in other ways, *what you wish to achieve with this data*. This mini data-analysis project focuses on *data wrangling*, *tidying*, and *visualization*. In short, it's a way for you to get your feet wet with exploring data on your own.
 
@@ -86,10 +87,10 @@ And that is exactly the first thing that you will do!
 
 <!-------------------------- Start your work below ---------------------------->
 
-1: apt_buildings\
+**1: apt_buildings\
 2: flow_sample\
 3: steam_games\
-4: vancouver_trees
+4: vancouver_trees**
 
 <!----------------------------------------------------------------------------->
 
@@ -166,7 +167,7 @@ glimpse(vancouver_trees)
 
 <!-------------------------- Start your work below ---------------------------->
 
-**I am interested in using the vancouver_trees dataset. I think it's an interesting dataset because it has a broad range of information, from the species name to the exact location the tree is planted. I think I will be able to do many interesting analyses with this dataset.**
+**I am interested in using the vancouver_trees dataset. I think it's an interesting dataset because it has a broad range of information, from the species name to the exact location the tree is planted. The sample size is also very large, so there is a lot of data to work with.**
 
 <!----------------------------------------------------------------------------->
 
@@ -239,37 +240,54 @@ vancouver_trees <- vancouver_trees # loading the dataframe into the environment
 
 #creating a new dataframe with a subset using select()
 trees_subset <- vancouver_trees %>%
-  select(tree_id, species_name, common_name, neighbourhood_name, diameter, curb, date_planted)
+  select(tree_id, genus_name, species_name, common_name, neighbourhood_name, curb, date_planted, plant_area, diameter)
 
 # view the new dataframe
 head(trees_subset)
 ```
 
-The third task will be determining how many trees are in each neighbourhood.
+**The third task will be determining how many trees are in each neighbourhood. This could tell us which neighbourhoods has the most or least trees and we can begin to see if there are any trends we can explore further later on.**
 
-```{r}
+```{r, Q 2.1.3 - Frequency of trees per neighbourhood}
+
+#creating a dataframe that has the number of trees per neighbourhood
 neighbourhood_count <- trees_subset %>%
-  count(neighbourhood_name)
+  count(neighbourhood_name) %>%
+  arrange(n)
 
-ggplot(neighbourhood_count, aes(x = neighbourhood_name, y = n)) +
+# plotting the number of trees per neighbourhood
+ggplot(neighbourhood_count, aes(x = reorder(neighbourhood_name, -n), y = n)) +
   geom_col() +
   labs(
     title = "Number of trees planted in each neighbourhood",
     x = "Neighbourhood",
     y = "Number of trees"
   ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # rotate x axis labels
+  theme(axis.text.x = element_text(angle = 65, hjust = 1)) # rotate x axis labels
 ```
 
-For the last task, I will look at the frequency of tree species. This could be interesting because we can see which species are the most or least popular to plant in Vancouver.
+**From the plot, we can see that the neighbourhood with the most trees is Renfrew-Collingwood, followed closely by Kensington-Cedar Cottage, and the neighbourhood with the least trees is Strathcona.**
 
-```{r, Q 2.1.4 - Plotting the frequency of each tree species}
+**For the last task, I will explore the relationship between tree genus and diameter. This could give us information about the range of diameters for each genus. Again, this may identify any trends I can look at further later on, plus maybe identify any possible outliers.**
 
-# make dataframe showing how many trees there are of each species
-species <- vancouver_trees %>%
-  count(species_name)
+```{r, Q 2.1.4 - Plotting genus and diameter of trunk}
 
+# plot all data using boxplots
+ggplot(trees_subset, aes(x = genus_name, y = diameter)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 5)) # rotate x axis labels
+
+# I also just want to look at one neighbourhood out of curiosity 
+# subset trees found in the killarney neighbourhood
+killarney <- trees_subset %>%
+  filter(neighbourhood_name == "KILLARNEY")
+
+ggplot(killarney, aes(x = genus_name, y = diameter)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 5)) # rotate x axis labels
 ```
+
+**The first plot, with all the available dater for diameter, shows a few points that may be outliers. For example, the datapoint showing the largest diameter is tree ID 199599. It has a recorded diameter of "435.00" and because no units were provided, I looked for what each variable meant on the [Vancouver Open Data Portal](https://opendata.vancouver.ca/explore/dataset/street-trees/information/?disjunctive.species_name&disjunctive.common_name&disjunctive.on_street&disjunctive.neighbourhood_name) website. For "diameter," the unit is the diameter of tree at breast height in inches - so, tree 199599 is recorded to have a diameter of 435 inches** 😱 **In addition, I am not sure how a tree can have a diameter of 0. Perhaps some quality control of the data needs to be done before further analyses should be done.**
 
 <!----------------------------------------------------------------------------->
 
@@ -278,6 +296,11 @@ species <- vancouver_trees %>%
 **(4 points)** So far, you have chosen a dataset and gotten familiar with it through exploring the data. You have also brainstormed one research question that interested you (Task 1.4). Now it's time to pick 4 research questions that you would like to explore in Milestone 2! Write the 4 questions and any additional comments below.
 
 <!--- *****START HERE***** --->
+
+1.  **Are there trends in the species of trees planted over the years? For example, are certain species planted more in certain neighbourhoods, and did certain species only get planted in the earlier years?**
+2.  **Is there a relationship between the species of tree versus where and how it's planted (ex. with root barrier or not, on a curb or not, plant area)**
+3.  **What are the average traits for each species (diameter, height range)?**
+4.  **Are there trends in the species of trees that are planted along roads versus clustered in parks?**
 
 <!----------------------------->
 

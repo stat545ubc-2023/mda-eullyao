@@ -1,5 +1,6 @@
 Mini Data-Analysis Deliverable 1
 ================
+Eully Ao
 
 # Welcome to your (maybe) first-ever data analysis project!
 
@@ -117,9 +118,9 @@ brief description of each dataset:
 
 **Things to keep in mind**
 
-- We hope that thhead(is project will serve as practice for carrying our
-  your own *independent* data analysis. Remember to comment your code,
-  be explicit about what you are doing, and write notes in this markdown
+- We hope that this project will serve as practice for carrying our your
+  own *independent* data analysis. Remember to comment your code, be
+  explicit about what you are doing, and write notes in this markdown
   document when you feel that context is required. As you advance in the
   project, prompts and hints to do this will be diminished - it’ll be up
   to you!
@@ -145,10 +146,10 @@ understand your data.
 
 <!-------------------------- Start your work below ---------------------------->
 
-1: apt_buildings  
+**1: apt_buildings  
 2: flow_sample  
 3: steam_games  
-4: vancouver_trees
+4: vancouver_trees**
 
 <!----------------------------------------------------------------------------->
 
@@ -413,8 +414,8 @@ to choose this one? Briefly explain your choice below.
 
 **I am interested in using the vancouver_trees dataset. I think it’s an
 interesting dataset because it has a broad range of information, from
-the species name to the exact location the tree is planted. I think I
-will be able to do many interesting analyses with this dataset.**
+the species name to the exact location the tree is planted. The sample
+size is also very large, so there is a lot of data to work with.**
 
 <!----------------------------------------------------------------------------->
 
@@ -539,51 +540,89 @@ vancouver_trees <- vancouver_trees # loading the dataframe into the environment
 
 #creating a new dataframe with a subset using select()
 trees_subset <- vancouver_trees %>%
-  select(tree_id, species_name, common_name, neighbourhood_name, diameter, curb, date_planted)
+  select(tree_id, genus_name, species_name, common_name, neighbourhood_name, curb, date_planted, plant_area, diameter)
 
 # view the new dataframe
 head(trees_subset)
 ```
 
-    ## # A tibble: 6 × 7
-    ##   tree_id species_name common_name         neighbourhood_name     diameter curb 
-    ##     <dbl> <chr>        <chr>               <chr>                     <dbl> <chr>
-    ## 1  149556 AMERICANA    BRANDON ELM         MARPOLE                      10 N    
-    ## 2  149563 SERRATA      JAPANESE ZELKOVA    MARPOLE                      10 N    
-    ## 3  149579 JAPONICA     JAPANESE SNOWBELL   KENSINGTON-CEDAR COTT…        4 Y    
-    ## 4  149590 AMERICANA    AUTUMN APPLAUSE ASH KENSINGTON-CEDAR COTT…       18 Y    
-    ## 5  149604 CAMPESTRE    HEDGE MAPLE         KENSINGTON-CEDAR COTT…        9 Y    
-    ## 6  149616 CALLERYANA   CHANTICLEER PEAR    MARPOLE                       5 Y    
-    ## # ℹ 1 more variable: date_planted <date>
+    ## # A tibble: 6 × 9
+    ##   tree_id genus_name species_name common_name         neighbourhood_name   curb 
+    ##     <dbl> <chr>      <chr>        <chr>               <chr>                <chr>
+    ## 1  149556 ULMUS      AMERICANA    BRANDON ELM         MARPOLE              N    
+    ## 2  149563 ZELKOVA    SERRATA      JAPANESE ZELKOVA    MARPOLE              N    
+    ## 3  149579 STYRAX     JAPONICA     JAPANESE SNOWBELL   KENSINGTON-CEDAR CO… Y    
+    ## 4  149590 FRAXINUS   AMERICANA    AUTUMN APPLAUSE ASH KENSINGTON-CEDAR CO… Y    
+    ## 5  149604 ACER       CAMPESTRE    HEDGE MAPLE         KENSINGTON-CEDAR CO… Y    
+    ## 6  149616 PYRUS      CALLERYANA   CHANTICLEER PEAR    MARPOLE              Y    
+    ## # ℹ 3 more variables: date_planted <date>, plant_area <chr>, diameter <dbl>
 
-The third task will be determining how many trees are in each
-neighbourhood.
+**The third task will be determining how many trees are in each
+neighbourhood. This could tell us which neighbourhoods has the most or
+least trees and we can begin to see if there are any trends we can
+explore further later on.**
 
 ``` r
+#creating a dataframe that has the number of trees per neighbourhood
 neighbourhood_count <- trees_subset %>%
-  count(neighbourhood_name)
+  count(neighbourhood_name) %>%
+  arrange(n)
 
-ggplot(neighbourhood_count, aes(x = neighbourhood_name, y = n)) +
+# plotting the number of trees per neighbourhood
+ggplot(neighbourhood_count, aes(x = reorder(neighbourhood_name, -n), y = n)) +
   geom_col() +
   labs(
     title = "Number of trees planted in each neighbourhood",
     x = "Neighbourhood",
     y = "Number of trees"
   ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # rotate x axis labels
+  theme(axis.text.x = element_text(angle = 65, hjust = 1)) # rotate x axis labels
 ```
 
-![](mini-project-1_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](mini-project-1_files/figure-gfm/Q%202.1.3%20-%20Frequency%20of%20trees%20per%20neighbourhood-1.png)<!-- -->
 
-For the last task, I will look at the frequency of tree species. This
-could be interesting because we can see which species are the most or
-least popular to plant in Vancouver.
+**From the plot, we can see that the neighbourhood with the most trees
+is Renfrew-Collingwood, followed closely by Kensington-Cedar Cottage,
+and the neighbourhood with the least trees is Strathcona.**
+
+**For the last task, I will explore the relationship between tree genus
+and diameter. This could give us information about the range of
+diameters for each genus. Again, this may identify any trends I can look
+at further later on, plus maybe identify any possible outliers.**
 
 ``` r
-# make dataframe showing how many trees there are of each species
-species <- vancouver_trees %>%
-  count(species_name)
+# plot all data using boxplots
+ggplot(trees_subset, aes(x = genus_name, y = diameter)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 5)) # rotate x axis labels
 ```
+
+![](mini-project-1_files/figure-gfm/Q%202.1.4%20-%20Plotting%20genus%20and%20diameter%20of%20trunk-1.png)<!-- -->
+
+``` r
+# I also just want to look at one neighbourhood out of curiosity 
+# subset trees found in the killarney neighbourhood
+killarney <- trees_subset %>%
+  filter(neighbourhood_name == "KILLARNEY")
+
+ggplot(killarney, aes(x = genus_name, y = diameter)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 5)) # rotate x axis labels
+```
+
+![](mini-project-1_files/figure-gfm/Q%202.1.4%20-%20Plotting%20genus%20and%20diameter%20of%20trunk-2.png)<!-- -->
+
+**The first plot, with all the available dater for diameter, shows a few
+points that may be outliers. For example, the datapoint showing the
+largest diameter is tree ID 199599. It has a recorded diameter of
+“435.00” and because no units were provided, I looked for what each
+variable meant on the [Vancouver Open Data
+Portal](https://opendata.vancouver.ca/explore/dataset/street-trees/information/?disjunctive.species_name&disjunctive.common_name&disjunctive.on_street&disjunctive.neighbourhood_name)
+website. For “diameter,” the unit is the diameter of tree at breast
+height in inches - so, tree 199599 is recorded to have a diameter of 435
+inches** 😱 **In addition, I am not sure how a tree can have a diameter
+of 0. Perhaps some quality control of the data needs to be done before
+further analyses should be done.**
 
 <!----------------------------------------------------------------------------->
 
@@ -596,6 +635,19 @@ research question that interested you (Task 1.4). Now it’s time to pick
 Write the 4 questions and any additional comments below.
 
 <!--- *****START HERE***** --->
+
+1.  **Are there trends in the species of trees planted over the years?
+    For example, are certain species planted more in certain
+    neighbourhoods, and did certain species only get planted in the
+    earlier years?**
+2.  **Is there a relationship between the species of tree versus where
+    and how it’s planted (ex. with root barrier or not, on a curb or
+    not, plant area)**
+3.  **What are the average traits for each species (diameter, height
+    range)?**
+4.  **Are there trends in the species of trees that are planted along
+    roads versus clustered in parks?**
+
 <!----------------------------->
 
 # Overall reproducibility/Cleanliness/Coherence Checklist
