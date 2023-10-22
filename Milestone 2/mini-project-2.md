@@ -1067,7 +1067,8 @@ write_csv(plant_area_counts, file = csv_path)
 ```
 
 **The code above specifies a path for the .csv file
-`plant_area_counts`** **to be saved in the “output” folder.**
+`plant_area_counts`** **to be saved in the “output” folder that was
+created.**
 
 <!----------------------------------------------------------------------------->
 
