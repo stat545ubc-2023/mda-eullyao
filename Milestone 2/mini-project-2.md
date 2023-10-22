@@ -155,22 +155,24 @@ for!
 
 <!------------------------- Start your work below ----------------------------->
 
-First, I will load the dataset as a dataframe.
+**First, I will load the dataset as a dataframe.**
 
 ``` r
 # load as a dataframe into the environment
 dataset <- vancouver_trees
 ```
 
-**Question 1**
+### Question 1
 
-My first research question is: Are there trends in the species of trees
-planted over the years? For example, are certain species planted more in
-certain neighbourhoods, and did certain species only get planted in the
-earlier years? This is a rather broad question, but because I am
+**My first research question is: Are there trends in the species of
+trees planted over the years? For example, are certain species planted
+more in certain neighbourhoods, and did certain species only get planted
+in the earlier years? This is a rather broad question, but because I am
 interested in the species of the trees, I can first determine how many
 species there are in the dataset and how many trees there are of each
-species. Reference: <https://dplyr.tidyverse.org/reference/index.html>.
+species.**
+
+**Reference: [dplyr](https://dplyr.tidyverse.org/reference/index.html)**
 
 ``` r
 # summarizing how many species there are in this dataset and how many trees there are for each species
@@ -202,15 +204,18 @@ head(species_counts)
     ## 5 AMERICANA      5515
     ## 6 SYLVATICA      5285
 
-The work above results in a dataframe where there are counts for the 283
-species of trees. This is helpful because even though I do not know yet
-how many of each species were planted in each year, I can still get a
-sense of the data I am working with. I can then also create a graph to
-visualize the spread of the data. References used:
-<https://dplyr.tidyverse.org/reference/index.html>,
-<https://ggplot2.tidyverse.org/reference/labs.html>,
-<https://stackoverflow.com/questions/25664007/reorder-bars-in-geom-bar-ggplot2-by-value>,
-<https://www.geeksforgeeks.org/rotating-and-spacing-axis-labels-in-ggplot2-in-r/>
+**The work above results in a dataframe where there are counts for the
+283 species of trees. This is helpful because even though I do not know
+yet how many of each species were planted in each year, I can still get
+a sense of the data I am working with. I can then also create a graph to
+visualize the spread of the data.**
+
+**References: [dplyr](https://dplyr.tidyverse.org/reference/index.html),
+[ggplot labs](https://ggplot2.tidyverse.org/reference/labs.html),
+[reordering
+bars](https://stackoverflow.com/questions/25664007/reorder-bars-in-geom-bar-ggplot2-by-value),
+[rotating
+labels](https://www.geeksforgeeks.org/rotating-and-spacing-axis-labels-in-ggplot2-in-r/)**
 
 ``` r
 # using ggplot to visualize the number of trees per species 
@@ -223,8 +228,8 @@ ggplot(species_counts, aes(x = reorder(species_name, -number), y = number)) +
 
 ![](mini-project-2_files/figure-gfm/Q1.2.1%20plot-1.png)<!-- -->
 
-The result looks like a nightmare! 283 species in one plot is too many,
-so I will plot a random 50 instead.
+**The result looks like a nightmare! 283 species in one plot is too
+many, so I will plot a random 50 instead.**
 
 ``` r
 # the result is a nightmare - 283 species is way too many! will plot a random 50 instead.
@@ -234,6 +239,22 @@ random_50 <- sample(unique(dataset$species_name), 50)
 species_50 <- species_counts %>%
   filter(species_name %in% random_50)
 
+# view the random list
+head(species_50)
+```
+
+    ## # A tibble: 6 × 2
+    ##   species_name  number
+    ##   <chr>          <int>
+    ## 1 RUBRUM          8467
+    ## 2 FREEMANI   X    4164
+    ## 3 HIPPOCASTANUM   2277
+    ## 4 PENNSYLVANICA   1612
+    ## 5 ROBUR           1521
+    ## 6 RETICULATA      1294
+
+``` r
+# plot number of trees per species
 ggplot(species_50, aes(x = reorder(species_name, -number), y = number)) +
   geom_bar(stat = "identity") +
   labs(x = "Species", y = "Number of trees", title = "Number of trees per species") +
@@ -243,21 +264,23 @@ ggplot(species_50, aes(x = reorder(species_name, -number), y = number)) +
 
 ![](mini-project-2_files/figure-gfm/Q1.2.1%20random%20sample%20plot-1.png)<!-- -->
 
-The second plot plots a random 50 species from the first plot, so it’s
+**The second plot plots a random 50 species from the first plot, so it’s
 slightly more useful since we can see the names of the species, however,
-seeing all the species in one plot would have been more useful.
+seeing all the species in one plot would have been more useful.**
 
-**Question 2**
+### Question 2
 
-My next question is: Is there a relationship between the species of tree
-versus where it is planted? For the first task, I can summarize how many
-trees per species are planted in each area (indicated by the
-observations in the variable ’plant_area”).
+**My next question is: Is there a relationship between the species of
+tree versus where it is planted? For the first task, I can summarize how
+many trees per species are planted in each area (indicated by the
+observations in the variable ’plant_area”).**
 
 ``` r
 # subsetting the data needed
 plant_area_df <- dataset %>%
   select(tree_id, species_name, plant_area) 
+
+#view subsetted data
 head(plant_area_df)
 ```
 
@@ -282,7 +305,7 @@ areas
     ## [31] "L"  "P"  "50" "34" "60" "M"  "21" "35" "n"  "75" "45" "19" "0"  "g"  "22"
     ## [46] "y"  "27" "32" "26"
 
-We can see that there are 49 different observations. The
+**We can see that there are 49 different observations. The
 [description](https://rdrr.io/github/UBC-MDS/datateachr/man/vancouver_trees.html)
 of this dataset states that for plant area, B = behind sidewalk, G = in
 tree gate, N = no sidewalk, C = cutout, and a number indicates boulevard
@@ -290,13 +313,14 @@ width in feet. There are observations such as “G”, “P”, “L”, “M”
 also missing observations (NA), which I will remove because there is no
 description for those. Observations such as “b” and “c” will be kept,
 assuming they are the same as “B” and “C”. Numbers will be renamed to
-“V” to indicate the tree being planted in a boulevard.
+“V” to indicate the tree being planted in a boulevard.**
 
-References used:
-<https://stackoverflow.com/questions/16516593/convert-from-lowercase-to-uppercase-all-values-in-all-character-variables-in-dat#>,
-<https://dplyr.tidyverse.org/reference/rename.html>,
-<https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html>,
-<https://stackoverflow.com/questions/59354928/regular-expressions-and-substring-in-r>
+**References: [lower to
+uppercase](https://stackoverflow.com/questions/16516593/convert-from-lowercase-to-uppercase-all-values-in-all-character-variables-in-dat#),
+[renaming
+characters](https://dplyr.tidyverse.org/reference/rename.html),
+[stringr](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html),
+[grepl](https://stackoverflow.com/questions/59354928/regular-expressions-and-substring-in-r)**
 
 ``` r
 # keeping only the rows in which the observations for plant_area are not NA, L, P, M, or y (aka keeping only B, G, N, C, b, g, n, c, and numbers)
@@ -340,6 +364,7 @@ plant_area_counts <- plant_area_filtered %>%
 plant_area_counts <- plant_area_counts %>%
   mutate(percent = number / sum(number) * 100)
 
+# view final dataframe
 head(plant_area_counts)
 ```
 
@@ -354,18 +379,32 @@ head(plant_area_counts)
     ## 5 ACERIFOLIA   X B             135   7.84 
     ## 6 ACERIFOLIA   X C             115   6.68
 
-Now, I can make a plot that shows the percentage of trees per species
+**Now, I can make a plot that shows the percentage of trees per species
 planted in each area. Again, I will just plot the same random 50 species
-as before.
+as before.**
 
-References:
-<https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2>
+**Reference: [grouped bar
+plot](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2)**
 
 ``` r
 # subset dataset to only have the random 50 species
 areas_50 <- plant_area_counts %>%
   filter(species_name %in% random_50)
+head(areas_50)
+```
 
+    ## # A tibble: 6 × 4
+    ## # Groups:   species_name [2]
+    ##   species_name plant_area number percent
+    ##   <chr>        <chr>       <int>   <dbl>
+    ## 1 ACUTISSIMA   B              27    5.15
+    ## 2 ACUTISSIMA   C              50    9.54
+    ## 3 ACUTISSIMA   G               8    1.53
+    ## 4 ACUTISSIMA   N              51    9.73
+    ## 5 ACUTISSIMA   V             388   74.0 
+    ## 6 AMURENSE     N               2   40
+
+``` r
 # creating stacked bar plot
 ggplot(areas_50, aes(x = species_name, y = percent, fill = plant_area )) +
   geom_bar(position = "fill", stat = "identity") +
@@ -376,25 +415,38 @@ ggplot(areas_50, aes(x = species_name, y = percent, fill = plant_area )) +
 
 ![](mini-project-2_files/figure-gfm/Q1.2.2%20plot-1.png)<!-- -->
 
-This plot is useful because we can see that some species are planted
+**This plot is useful because we can see that some species are planted
 only in one area, whereas some are planted in all 4 areas, however, it
 should be kept in mind that this plot shows proportions. For example,
 100% of Spectabilis trees (6 in total) are not on sidewalks (N), while
-100% of Strobus are in a boulevard, but there’s only 1 tree.
+100% of Strobus are in a boulevard, but there’s only 1 tree.**
 
-**Question 3**
+### **Question 3**
 
-My next question is: What are the average traits for each species
+**My next question is: What are the average traits for each species
 (diameter, height range)? As a task, I can find the range, mean, median,
 and standard deviation of the diameter within each species. I will also
-be removing the trees with a diameter of 0.00.
+be removing the trees with a diameter of 0.00.**
 
 ``` r
 # subset dataset and create a new dataframe
 diameter_df <- dataset %>%
   select(tree_id, species_name, diameter) %>%
   filter(diameter != 0.00) # remove the trees with a diameter of 0.00
+head(diameter_df)
+```
 
+    ## # A tibble: 6 × 3
+    ##   tree_id species_name diameter
+    ##     <dbl> <chr>           <dbl>
+    ## 1  149556 AMERICANA          10
+    ## 2  149563 SERRATA            10
+    ## 3  149579 JAPONICA            4
+    ## 4  149590 AMERICANA          18
+    ## 5  149604 CAMPESTRE           9
+    ## 6  149616 CALLERYANA          5
+
+``` r
 # calculate the summary statistics 
 diameter_stats <- diameter_df %>%
   group_by(species_name) %>%
@@ -404,6 +456,7 @@ diameter_stats <- diameter_df %>%
     median = median(diameter),
     sd = sd(diameter))
 
+# view final dataframe
 head(diameter_stats)
 ```
 
@@ -417,14 +470,27 @@ head(diameter_stats)
     ## 5 AILANTHIFOLIA   16   32      34    6.44
     ## 6 ALBA            38.5 19.4    20.2 14.4
 
-The table nicely summarizes these statistics and will be useful for
-creating a plot.
+**The table nicely summarizes these statistics and will be useful for
+creating a plot.**
 
 ``` r
 # subset the random 50 species
 diameter_stats_50 <- diameter_stats %>%
   filter(species_name %in% random_50)
+head(diameter_stats_50) # this isn't tidy
+```
 
+    ## # A tibble: 6 × 5
+    ##   species_name range  mean median    sd
+    ##   <chr>        <dbl> <dbl>  <dbl> <dbl>
+    ## 1 ACUTISSIMA    34    8.87   8.5   4.33
+    ## 2 AMURENSE      12   18.1   19     5.03
+    ## 3 AQUIFOLIUM    40   12.6   12     6.73
+    ## 4 ARBOREUM       2.5  3      3     1.77
+    ## 5 ATLANTICA     45   16.5    9.62 14.9 
+    ## 6 BABYLONICA    37.5 23.6   23     9.68
+
+``` r
 # use pivot_longer to make the data frame tidy, with a new column for the name of the statistic
 diameter_stats_50_tidy <- diameter_stats_50 %>%
   pivot_longer(
@@ -433,6 +499,21 @@ diameter_stats_50_tidy <- diameter_stats_50 %>%
     values_to = "value") %>% # column for values
   filter(value >= 1)
 
+#view tidied dataframe
+head(diameter_stats_50_tidy)
+```
+
+    ## # A tibble: 6 × 3
+    ##   species_name statistic value
+    ##   <chr>        <chr>     <dbl>
+    ## 1 ACUTISSIMA   range     34   
+    ## 2 ACUTISSIMA   mean       8.87
+    ## 3 ACUTISSIMA   median     8.5 
+    ## 4 ACUTISSIMA   sd         4.33
+    ## 5 AMURENSE     range     12   
+    ## 6 AMURENSE     mean      18.1
+
+``` r
 # can now do a grouped bar plot
 ggplot(diameter_stats_50_tidy, aes(fill = statistic, y = value, x = species_name)) +
   geom_bar(position = "dodge", stat = "identity") +
@@ -443,24 +524,38 @@ ggplot(diameter_stats_50_tidy, aes(fill = statistic, y = value, x = species_name
 
 ![](mini-project-2_files/figure-gfm/Q1.2.3%20plot-1.png)<!-- -->
 
-This plot is still difficult to read with 50 species, but does allow the
-visualization of the summary statistics, and we can see trends like how
-most species have a large range in diameter.
+**This plot is still difficult to read with 50 species, but does allow
+the visualization of the summary statistics, and we can see trends like
+how most species have a large range in diameter.**
 
-**Question 4**
+### **Question 4**
 
-My last question is: Are there trends in the species of trees that are
+**My last question is: Are there trends in the species of trees that are
 planted along roads versus clustered in parks? While this may be
 interesting to investigate, this question is difficult to answer without
 somehow mapping the longitude and latitude coordinates to determine
 whether the trees are in parks. I will change the question to look at
-the what percentage of trees within each species is planted on the curb.
+the what percentage of trees within each species is planted on the
+curb.**
 
 ``` r
 # subset dataset and create a new dataframe
 curb_df <- dataset %>%
   select(tree_id, species_name, curb)
+head(curb_df)
+```
 
+    ## # A tibble: 6 × 3
+    ##   tree_id species_name curb 
+    ##     <dbl> <chr>        <chr>
+    ## 1  149556 AMERICANA    N    
+    ## 2  149563 SERRATA      N    
+    ## 3  149579 JAPONICA     Y    
+    ## 4  149590 AMERICANA    Y    
+    ## 5  149604 CAMPESTRE    Y    
+    ## 6  149616 CALLERYANA   Y
+
+``` r
 # summarizing how many trees in each species are on the curb
 curb_counts <- curb_df %>%
   group_by(species_name, curb) %>%
@@ -471,10 +566,26 @@ curb_counts <- curb_df %>%
     ## `.groups` argument.
 
 ``` r
+head(curb_counts)
+```
+
+    ## # A tibble: 6 × 3
+    ## # Groups:   species_name [4]
+    ##   species_name   curb  number
+    ##   <chr>          <chr>  <int>
+    ## 1 ABIES          N         26
+    ## 2 ABIES          Y        113
+    ## 3 ACERIFOLIA   X N        176
+    ## 4 ACERIFOLIA   X Y       1548
+    ## 5 ACUMINATA      Y          7
+    ## 6 ACUTISSIMA     N          4
+
+``` r
 # calculating the percentage of trees per species that are on the curb or not
 curb_counts <- curb_counts %>%
   mutate(percent = number / sum(number) * 100)
 
+# view final dataframe
 head(curb_counts)
 ```
 
@@ -489,13 +600,27 @@ head(curb_counts)
     ## 5 ACUMINATA      Y          7 100    
     ## 6 ACUTISSIMA     N          4   0.760
 
-Again, I will plot 50 of the species in a stacked bar plot.
+**Again, I will plot 50 of the species in a stacked bar plot.**
 
 ``` r
 # subset dataset to only have the random 50 species
 curb_50 <- curb_counts %>%
   filter(species_name %in% random_50)
+head(curb_50)
+```
 
+    ## # A tibble: 6 × 4
+    ## # Groups:   species_name [4]
+    ##   species_name curb  number percent
+    ##   <chr>        <chr>  <int>   <dbl>
+    ## 1 ACUTISSIMA   N          4   0.760
+    ## 2 ACUTISSIMA   Y        522  99.2  
+    ## 3 AMURENSE     Y          5 100    
+    ## 4 AQUIFOLIUM   N         33  21.3  
+    ## 5 AQUIFOLIUM   Y        122  78.7  
+    ## 6 ARBOREUM     N          1  50
+
+``` r
 # creating stacked bar plot
 ggplot(curb_50, aes(x = species_name, y = percent, fill = curb )) +
   geom_bar(position = "fill", stat = "identity") +
@@ -506,8 +631,8 @@ ggplot(curb_50, aes(x = species_name, y = percent, fill = curb )) +
 
 ![](mini-project-2_files/figure-gfm/Q1.2.4%20plot-1.png)<!-- -->
 
-This plot makes it easier to visualize that most most species are
-planted both on and off the curb, with more being planted on the curb.
+**This plot makes it easier to visualize that most most species are
+planted both on and off the curb, with more being planted on the curb.**
 
 <!----------------------------------------------------------------------------->
 
@@ -521,20 +646,21 @@ research questions are yielding interesting results?
 
 <!------------------------- Write your answer here ---------------------------->
 
-I think having the subsetted dataframes help with answering the research
-questions, plus the graphs had some interested results. For example, the
-plot for the third question shows that many trees have a large range in
-diameter, and the plot for the second question shows that most species
-are planted in all 4 areas, the majority being in boulevards. However,
-because all my questions were related to using the species variable, the
-datasets are still quite large since there are 283 species. I think
-using a smaller dataset and investigating a more specific question would
-be an improvement. For example, I can narrow it down to one species and
-see if there is a correlation between two variables, such diameter and
-planted area. Or, I can use genus rather than species. Plus, rather than
-randomly picking a certain number of species, I can also filter out the
-categories that do not fit certain criteria (ex. only keep the species
-that exceed a certain proportion threshold in a neighbourhood).
+**I think having the subsetted dataframes help with answering the
+research questions, plus the graphs had some interested results. For
+example, the plot for the third question shows that many trees have a
+large range in diameter, and the plot for the second question shows that
+most species are planted in all 4 areas, the majority being in
+boulevards. However, because all my questions were related to using the
+species variable, the datasets are still quite large since there are 283
+species. I think using a smaller dataset and investigating a more
+specific question would be an improvement. For example, I can narrow it
+down to one species and see if there is a correlation between two
+variables, such diameter and planted area. Or, I can use genus rather
+than species. Plus, rather than randomly picking a certain number of
+species, I can also filter out the categories that do not fit certain
+criteria (ex. only keep the species that exceed a certain proportion
+threshold in a neighbourhood).**
 
 <!----------------------------------------------------------------------------->
 
@@ -557,7 +683,7 @@ pick 8, and explain whether the data is untidy or tidy.
 
 <!--------------------------- Start your work below --------------------------->
 
-The dataset has more than 8 variables, so I will be selecting 8.
+**The dataset has more than 8 variables, so I will be selecting 8.**
 
 ``` r
 # subset dataset and create a new dataframe
@@ -585,7 +711,7 @@ colnames(untidy)
     ## [1] "tree_id"       "civic_number"  "std_street"    "genus_name"   
     ## [5] "species_name"  "cultivar_name" "common_name"   "assigned"
 
-The 8 variables are `tree_id`, `civic_number`, `std_street`,
+**The 8 variables are `tree_id`, `civic_number`, `std_street`,
 `genus_name`, `species_name`, `cultivar_name`, `common_name`, and
 `assigned`. `tree_id` is the ID given to each tree, `civic_number` is
 the street address of the site at which the tree is associated with,
@@ -594,7 +720,7 @@ associated with, `assigned` indicates whether the address is made up to
 associate the tree with a nearby lot, and the rest are the genus,
 species, cultivar, and common names of the tree. Each row contains
 multiple observations of each tree (each of the variables). Therefore,
-this dataset is **not** tidy.
+this dataset is not tidy.**
 
 <!----------------------------------------------------------------------------->
 
@@ -611,13 +737,13 @@ and “after”.
 
 <!--------------------------- Start your work below --------------------------->
 
-The data is untidy, so I will tidy it such that each row represents an
+**The data is untidy, so I will tidy it such that each row represents an
 observation. To do so, I will use `pivot_longer` to create a new column
 that has variables indicating which observation (ex. genus name, species
 name) is in that row. In other words, a row would be split into
-multiple, so there will be multiple rows for the same tree.
+multiple, so there will be multiple rows for the same tree.**
 
-Before tidying:
+**Before tidying:**
 
 ``` r
 head(untidy)
@@ -634,7 +760,7 @@ head(untidy)
     ## 6  149616          585 W 61ST AV  PYRUS      CALLERYANA   CHANTICLEER    
     ## # ℹ 2 more variables: common_name <chr>, assigned <chr>
 
-After tidying:
+**After tidying:**
 
 ``` r
 tidy <- untidy %>%
@@ -668,10 +794,10 @@ analysis in the remaining tasks:
 
 <!-------------------------- Start your work below ---------------------------->
 
-1.  What is the relationship between height and diameter of genera with
-    over 1000 trees planted?
-2.  Are there any trends in the tree genera with more than 1000 trees
-    planted in neighborhoods?
+1.  **What is the relationship between height and diameter of genera
+    with over 1000 trees planted?**
+2.  **Are there any trends in the tree genera with more than 1000 trees
+    planted in neighborhoods?**
 
 <!----------------------------------------------------------------------------->
 
@@ -679,19 +805,19 @@ Explain your decision for choosing the above two research questions.
 
 <!--------------------------- Start your work below --------------------------->
 
-1.  Originally, I wanted to determine average traits for each species
+1.  **Originally, I wanted to determine average traits for each species
     (diameter, height range), however, this is more of a task rather
     exploring whether there is a relationship between the two variables
     (thus being a more interesting question). So, I can investigate
     whether there is a relationship between the traits diameter and
     height. Plus, because there are so many species, using genus instead
     could still yield interesting results while decreasing the number of
-    categories, in addition to selecting only the top few genera.
-2.  I think it would still be interesting to look at whether there are
+    categories, in addition to selecting only the top few genera.**
+2.  **I think it would still be interesting to look at whether there are
     preferences for certain trees in each neighbourhood, but because
     there are so many species, using genus instead would decrease the
     number of categories and increase the number of trees in each
-    category.
+    category.**
 
 <!----------------------------------------------------------------------------->
 
@@ -705,10 +831,10 @@ data, one for each research question.)
 
 <!--------------------------- Start your work below --------------------------->
 
-**Question 1**
+### **Question 1**
 
-What is the relationship between height and diameter of genera with over
-1000 trees planted?
+**What is the relationship between height and diameter of genera with
+over 1000 trees planted?**
 
 ``` r
 # find the number of trees in each genus
@@ -728,6 +854,21 @@ height_diameter <- dataset %>%
   summarize(mean_height = mean(height_range_id), 
             mean_diameter = mean(diameter))
 
+# view final dataframe
+head(height_diameter)
+```
+
+    ## # A tibble: 6 × 3
+    ##   genus_name     mean_height mean_diameter
+    ##   <chr>                <dbl>         <dbl>
+    ## 1 ACER                  2.73         10.6 
+    ## 2 AESCULUS              4.60         23.7 
+    ## 3 BETULA                4.48         17.9 
+    ## 4 CARPINUS              2.27          9.33
+    ## 5 CERCIDIPHYLLUM        1.88          6.90
+    ## 6 CORNUS                1.80          8.02
+
+``` r
 # plot to see relationship
 ggplot(height_diameter, aes(x = mean_height, y = mean_diameter, color = genus_name)) +
   geom_point(size = 4, alpha = 0.5) +
@@ -736,10 +877,10 @@ ggplot(height_diameter, aes(x = mean_height, y = mean_diameter, color = genus_na
 
 ![](mini-project-2_files/figure-gfm/Q2.3.1%20relationship%20between%20height%20and%20diameter-1.png)<!-- -->
 
-**Question 2**
+### **Question 2**
 
-Are there any trends in the tree genera (those with more than 1000
-trees) planted in neighborhoods?
+**Are there any trends in the tree genera (those with more than 1000
+trees) planted in neighborhoods?**
 
 ``` r
 # subset, keeping the trees whose genus they belong are in the list previously created
@@ -750,6 +891,21 @@ genus_nh <- dataset %>%
 genus_nh<- genus_nh %>%
   count(neighbourhood_name, genus_name)
 
+# view final dataframe
+head(genus_nh)
+```
+
+    ## # A tibble: 6 × 3
+    ##   neighbourhood_name genus_name         n
+    ##   <chr>              <chr>          <int>
+    ## 1 ARBUTUS-RIDGE      ACER             867
+    ## 2 ARBUTUS-RIDGE      AESCULUS         134
+    ## 3 ARBUTUS-RIDGE      BETULA            77
+    ## 4 ARBUTUS-RIDGE      CARPINUS         167
+    ## 5 ARBUTUS-RIDGE      CERCIDIPHYLLUM   100
+    ## 6 ARBUTUS-RIDGE      CORNUS            58
+
+``` r
 ggplot(genus_nh, aes(x = neighbourhood_name, y = n, fill = genus_name)) +
   geom_bar(stat = "identity") +
   labs(x = "Neighbourhood", y = "Trees (n)", fill = "Genus", title = "Trends in Genera with >1000 Trees Planted") +
@@ -770,10 +926,10 @@ these.
 
 <!-------------------------- Start your work below ---------------------------->
 
-**Research Question**: What is the relationship between height and
-diameter of genera with over 1000 trees planted?
+**Research Question**: **What is the relationship between height and
+diameter of genera with over 1000 trees planted?**
 
-**Variable of interest**: height
+**Variable of interest**: **height**
 
 <!----------------------------------------------------------------------------->
 
@@ -815,7 +971,7 @@ print(height_diameter_lm)
     ##   (Intercept)  mean_diameter  
     ##        0.6565         0.1848
 
-The model states that for every 1 unit change in diameter (1 inch),
+**The model states that for every 1 unit change in diameter (1 inch),
 height increases by approx 0.18 units (1 unit = 10 feet, so 0.18 unit =
 1.8 feet = 21.6 inches). 1 unit of diamater is 1 inch at breast height,
 while 1 unit of height is 10 feet (it should be noted that the
@@ -824,7 +980,7 @@ feet.); 0.18 of 10 feet is 1.8 feet or 21.6 inches. So, the model
 suggests that mean height is expected to change 21.6 inches (again, an
 approximate because height is reported as a range) for every 1 inch of
 change in mean diameter. This makes sense because trees are typically
-grow taller faster than they increase in diameter.
+grow taller faster than they increase in diameter.**
 
 <!----------------------------------------------------------------------------->
 
@@ -844,8 +1000,8 @@ Y, or a single value like a regression coefficient or a p-value.
 
 <!-------------------------- Start your work below ---------------------------->
 
-I will produce a p-value to determine whether mean diameter is a
-significant predictor of mean height.
+**I will produce a p-value to determine whether mean diameter is a
+significant predictor of mean height.**
 
 ``` r
 # produce tibble using tidy()
@@ -861,10 +1017,10 @@ print(lm_tidy)
     ## 1 (Intercept)      0.657    0.139       4.73 1.02e- 4
     ## 2 mean_diameter    0.185    0.0113     16.3  9.33e-14
 
-Using the `broom` package’s function `tidy()`, a p.value of 9.3e-14 for
-the term mean_diameter is produced. Because it is a very small value,
-this suggests that `mean_diameter` is a significant predictor of
-`mean_height` for those genera.
+**Using the `broom` package’s function `tidy()`, a p.value of 9.3e-14
+for the term mean_diameter is produced. Because it is a very small
+value, this suggests that `mean_diameter` is a significant predictor of
+`mean_height` for those genera.**
 
 <!----------------------------------------------------------------------------->
 
@@ -889,10 +1045,29 @@ file in your `output` folder. Use the `here::here()` function.
 <!-------------------------- Start your work below ---------------------------->
 
 ``` r
-# save the plant_area_counts table as a csv file in the output folder using here()
-path <- here("output", "plant_area_counts.csv")
-write.csv(plant_area_counts, path)
+# specifying the path for the folder "output"
+folder_path <- here("output")
+folder_path
 ```
+
+    ## [1] "/Users/eully/Desktop/courses/STAT 545/mda_eullyao/output"
+
+``` r
+# create folder
+dir.create(folder_path)
+```
+
+    ## Warning in dir.create(folder_path): '/Users/eully/Desktop/courses/STAT
+    ## 545/mda_eullyao/output' already exists
+
+``` r
+# write .csv file in that folder
+csv_path <- here("output", "plant_area_counts.csv")
+write_csv(plant_area_counts, file = csv_path)
+```
+
+**The code above specifies a path for the .csv file
+`plant_area_counts`** **to be saved in the “output” folder.**
 
 <!----------------------------------------------------------------------------->
 
@@ -905,6 +1080,38 @@ Use the functions `saveRDS()` and `readRDS()`.
 - The same robustness and reproducibility criteria as in 4.1 apply here.
 
 <!-------------------------- Start your work below ---------------------------->
+
+``` r
+# specify path for the model object
+model_path <- here("output", "lm.rds" )
+
+# write as RDS
+saveRDS(height_diameter_lm, file = model_path)
+
+# read RDS
+lm_rds <- readRDS(model_path)
+lm_rds
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = mean_height ~ mean_diameter, data = height_diameter)
+    ## 
+    ## Coefficients:
+    ##   (Intercept)  mean_diameter  
+    ##        0.6565         0.1848
+
+``` r
+# checking if the RDS is the same as the model object
+identical(lm_rds, height_diameter_lm)
+```
+
+    ## [1] TRUE
+
+**The code above specifies a path for the RDS `lm_rds`** **to be saved
+in the “output” folder. `identical()`** **was used to check if the
+object, when read using `readRDS`, produces the same object.**
+
 <!----------------------------------------------------------------------------->
 
 # Overall Reproducibility/Cleanliness/Coherence Checklist

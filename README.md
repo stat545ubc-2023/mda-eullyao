@@ -9,6 +9,10 @@ This repository contains the mini data analysis project for STAT 545. The analys
 -   Files for Milestone 1
     -   [Analysis for Milestone 1 - R Markdown](https://github.com/stat545ubc-2023/mda-eullyao/blob/main/MIlestone%201/mini-project-1.Rmd)
     -   [Analysis for Milestone 1 - Markdown](https://github.com/stat545ubc-2023/mda-eullyao/blob/main/MIlestone%201/mini-project-1.md)
+-   Files for Milestone 2
+    -   Analysis for Milestone 2 - R Markdown
+    -   Analysis for Milestone 2 - Markdown
+    -   Output folder for task 4 in Milestone 2
 
 ### Getting started
 
