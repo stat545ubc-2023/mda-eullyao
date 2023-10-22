@@ -183,7 +183,7 @@ areas
 
 **We can see that there are 49 different observations. The [description](https://rdrr.io/github/UBC-MDS/datateachr/man/vancouver_trees.html) of this dataset states that for plant area, B = behind sidewalk, G = in tree gate, N = no sidewalk, C = cutout, and a number indicates boulevard width in feet. There are observations such as "G", "P", "L", "M", and also missing observations (NA), which I will remove because there is no description for those. Observations such as "b" and "c" will be kept, assuming they are the same as "B" and "C". Numbers will be renamed to "V" to indicate the tree being planted in a boulevard.**
 
-**References: [lower to uppercase](https://stackoverflow.com/questions/16516593/convert-from-lowercase-to-uppercase-all-values-in-all-character-variables-in-dat#), [renaming characters](https://dplyr.tidyverse.org/reference/rename.html), [stringr]( https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html), [grepl](https://stackoverflow.com/questions/59354928/regular-expressions-and-substring-in-r)**
+**References: [lower to uppercase](https://stackoverflow.com/questions/16516593/convert-from-lowercase-to-uppercase-all-values-in-all-character-variables-in-dat#), [renaming characters](https://dplyr.tidyverse.org/reference/rename.html), [stringr](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html), [grepl](https://stackoverflow.com/questions/59354928/regular-expressions-and-substring-in-r)**
 
 ```{r, 1.2.2 summarizing}
 # keeping only the rows in which the observations for plant_area are not NA, L, P, M, or y (aka keeping only B, G, N, C, b, g, n, c, and numbers)
@@ -565,7 +565,7 @@ Take a summary table that you made from Task 1, and write it as a csv file in yo
 
 <!-------------------------- Start your work below ---------------------------->
 
-```{r, Q4.1 writing .csv file}
+```{r, Q4.1 writing .csv file, warning = FALSE, message = FALSE}
 
 # specifying the path for the folder "output"
 folder_path <- here("output")

@@ -1055,12 +1055,7 @@ folder_path
 ``` r
 # create folder
 dir.create(folder_path)
-```
 
-    ## Warning in dir.create(folder_path): '/Users/eully/Desktop/courses/STAT
-    ## 545/mda_eullyao/output' already exists
-
-``` r
 # write .csv file in that folder
 csv_path <- here("output", "plant_area_counts.csv")
 write_csv(plant_area_counts, file = csv_path)
